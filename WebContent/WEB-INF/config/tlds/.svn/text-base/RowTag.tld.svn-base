@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE taglib
+  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"
+  "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+
+<taglib>
+    <tlibversion>1.0</tlibversion>
+    <jspversion>1.1</jspversion>
+    <shortname>RowTag</shortname>
+    <tag>
+        <name>row</name>
+        <tagclass>com.amarda.framework.taglib.RowTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <info>
+          Format an HTML Table Row (i.e. &lt;TR&gt;....&lt;/TR&gt;)
+        </info>
+        <attribute><name>oddColor</name></attribute>
+        <attribute><name>evenColor</name></attribute>
+        <attribute><name>oddStyleClass</name></attribute>
+        <attribute><name>evenStyleClass</name></attribute>
+        <attribute><name>align</name></attribute>
+        <attribute><name>valign</name></attribute>
+        <attribute><name>onblur</name><rtexprvalue>true</rtexprvalue></attribute>
+        <attribute><name>onchange</name><rtexprvalue>true</rtexprvalue></attribute>
+        <attribute><name>onclick</name><rtexprvalue>true</rtexprvalue></attribute>
+        <attribute><name>ondblclick</name><rtexprvalue>true</rtexprvalue></attribute>
+        <attribute><name>onfocus</name><rtexprvalue>true</rtexprvalue></attribute>
+        <attribute><name>onkeydown</name><rtexprvalue>true</rtexprvalue></attribute>
+        <attribute><name>onkeypress</name><rtexprvalue>true</rtexprvalue></attribute>
+        <attribute><name>onkeyup</name><rtexprvalue>true</rtexprvalue></attribute>
+        <attribute><name>onmousedown</name><rtexprvalue>true</rtexprvalue></attribute>
+        <attribute><name>onmousemove</name><rtexprvalue>true</rtexprvalue></attribute>
+        <attribute><name>onmouseout</name><rtexprvalue>true</rtexprvalue></attribute>
+        <attribute><name>onmouseover</name><rtexprvalue>true</rtexprvalue></attribute>
+        <attribute><name>onmouseup</name><rtexprvalue>true</rtexprvalue></attribute>
+        <attribute><name>style</name><rtexprvalue>true</rtexprvalue></attribute>
+        <attribute><name>styleClass</name><rtexprvalue>true</rtexprvalue></attribute>
+    </tag>
+</taglib>

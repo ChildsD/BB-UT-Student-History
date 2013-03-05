@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/repos/bb_development/!svn/ver/530/BB-UT-Gradebook-Service/WebContent/tool
+END
+commonHidden.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/repos/bb_development/!svn/ver/530/BB-UT-Gradebook-Service/WebContent/tool/commonHidden.jsp
+END
+editScoresForGCItem.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/repos/bb_development/!svn/ver/648/BB-UT-Gradebook-Service/WebContent/tool/editScoresForGCItem.jsp
+END
+message.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/repos/bb_development/!svn/ver/532/BB-UT-Gradebook-Service/WebContent/tool/message.jsp
+END
+selectGradeCenterTask.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/repos/bb_development/!svn/ver/565/BB-UT-Gradebook-Service/WebContent/tool/selectGradeCenterTask.jsp
+END
+error.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/repos/bb_development/!svn/ver/532/BB-UT-Gradebook-Service/WebContent/tool/error.jsp
+END
+contact.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/repos/bb_development/!svn/ver/530/BB-UT-Gradebook-Service/WebContent/tool/contact.jsp
+END
+deleteGCItems.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/repos/bb_development/!svn/ver/648/BB-UT-Gradebook-Service/WebContent/tool/deleteGCItems.jsp
+END
+noAccess.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/repos/bb_development/!svn/ver/631/BB-UT-Gradebook-Service/WebContent/tool/noAccess.jsp
+END
+displayReport.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/repos/bb_development/!svn/ver/532/BB-UT-Gradebook-Service/WebContent/tool/displayReport.jsp
+END

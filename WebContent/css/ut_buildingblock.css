@@ -1,0 +1,45 @@
+.history {
+	display: inline-table;
+	padding: 1em;
+	border: solid;
+	width: 20em;
+	margin: 0 10px 0 0;
+}
+
+.history img {
+	float: left;
+	display: inline;
+	width: 6em;
+	padding: 0 1.5em 0 0;
+}
+
+.history li li {
+	padding: 0 0 0 9em;
+}
+
+.head p {
+	padding: 0 0 1em 0;
+}
+
+.head form {
+	padding: 0 0 1em 0;
+}
+
+.head {
+	width: auto;
+}
+
+.history_full {
+	display: inline-table;
+	padding: 1em;
+	border: solid;
+	width: 40em;
+	margin: 0 10px 0 0;
+}
+
+.history_full img {
+	float: left;
+	display: inline;
+	width: 20em;
+	padding: 0 1.5em 0 0;
+}

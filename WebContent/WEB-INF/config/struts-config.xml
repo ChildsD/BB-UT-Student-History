@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+
+
+<struts-config>
+	<data-sources />
+	<form-beans>
+		<form-bean name="HistoriesForm"
+			type="edu.utexas.ctl.bb.histool.web.struts.forms.HistoriesForm" />
+		<form-bean name="SingleHistoryForm"
+			type="edu.utexas.ctl.bb.histool.web.struts.forms.SingleHistoryForm" />
+	</form-beans>
+
+	<global-exceptions>
+		<exception key="errors.general" type="java.lang.Exception"
+			path="/tool/error.jsp"></exception>
+	</global-exceptions>
+
+	<global-forwards>
+		<forward name="error_jsp" path="/tool/error.jsp"></forward>
+		<forward name="message_jsp" path="/tool/message.jsp"></forward>
+		<forward name="noAccess_jsp" path="/tool/noAccess.jsp" />
+		<forward name="contact_jsp" path="/tool/contact.jsp" />
+	</global-forwards>
+
+	<action-mappings>
+		<action path="/tool/showStudentsHistories" forward="/tool/showStudentsHistories.jsp" />
+		<action path="/tool/showFullHistory" forward="/tool/showFullHistory.jsp" />
+
+		<action attribute="HistoriesForm" name="HistoriesForm"
+			path="/tool/showStudentsHistories" scope="session"
+			type="edu.utexas.ctl.bb.histool.web.struts.actions.ShowStudentsHistoriesAction"
+			validate="false">
+			<forward name="showStudentsHistories_jsp" path="/tool/showStudentsHistories.jsp" />
+			<forward name="showFullHistory_jsp" path="/tool/showFullHistory.jsp" />
+			<forward name="displayReport_jsp" path="/tool/displayReport.jsp" />
+		</action>
+
+		<action attribute="SingleHistoryForm" name="SingleHistoryForm" path="/tool/showFullHistory"
+			scope="session"
+			type="edu.utexas.ctl.bb.histool.web.struts.actions.ShowFullHistoryAction"
+			validate="false">
+			<forward name="showFullHistory_jsp" path="/tool/showFullHistory.jsp" />
+			<forward name="displayReport_jsp" path="/tool/displayReport.jsp" />
+		</action>
+
+	</action-mappings>
+	<message-resources parameter="edu.utexas.ctl.bb.histool.ApplicationResources" />
+</struts-config>

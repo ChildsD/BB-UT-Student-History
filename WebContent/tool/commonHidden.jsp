@@ -1,0 +1,1 @@
+<input type=hidden name="course_id" value="<%=request.getParameter("course_id")%>">

@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/repos/bb_development/!svn/ver/530/BB-UT-Gradebook-Service/WebContent/WEB-INF/config
+END
+struts-config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/repos/bb_development/!svn/ver/631/BB-UT-Gradebook-Service/WebContent/WEB-INF/config/struts-config.xml
+END
+log4j.properties
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/repos/bb_development/!svn/ver/530/BB-UT-Gradebook-Service/WebContent/WEB-INF/config/log4j.properties
+END
+.struts-config.mex
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/repos/bb_development/!svn/ver/530/BB-UT-Gradebook-Service/WebContent/WEB-INF/config/.struts-config.mex
+END

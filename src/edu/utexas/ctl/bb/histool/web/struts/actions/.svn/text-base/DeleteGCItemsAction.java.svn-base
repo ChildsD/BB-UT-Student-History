@@ -1,0 +1,73 @@
+//Created by MyEclipse Struts
+// XSL source (default): platform:/plugin/com.genuitec.eclipse.cross.easystruts.eclipse_4.0.1/xslt/JavaClass.xsl
+
+package edu.utexas.ctl.bb.gbtool.web.struts.actions;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
+import edu.utexas.ctl.bb.gbtool.services.BlackboardService;
+import edu.utexas.ctl.bb.gbtool.web.struts.forms.GCItemForm;
+import edu.utexas.diia.bb.gbtool.web.struts.actions.BaseAction;
+import blackboard.data.course.CourseMembership;
+import blackboard.persist.Id;
+import blackboard.platform.session.BbSession;
+import blackboard.platform.session.BbSessionManagerService;
+import blackboard.platform.session.BbSessionManagerServiceFactory;
+
+public class DeleteGCItemsAction extends BaseAction {
+
+    public ActionForward executeTask(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+
+        GCItemForm gcItemForm = (GCItemForm) form;
+        String statusMessage ="";
+        
+        Id crsId = (Id) getSessionObj(request, "courseId");
+        BlackboardService bbService = new BlackboardService();
+        List itemList = bbService.getDeletableLineItemList(crsId);
+        setRequestObj(request, "theItemList", itemList);
+        BbSessionManagerService sessionService =  BbSessionManagerServiceFactory.getInstance();
+        BbSession bbSession = sessionService.getSession(request);
+        Id userId = bbSession.getUserId();
+        
+        try {
+            
+            CourseMembership cmUser = bbService.getCourseMembershipForUser(crsId, userId);
+            if(cmUser==null || (cmUser.getRole() != blackboard.data.course.CourseMembership.Role.INSTRUCTOR  
+                        && cmUser.getRole() != blackboard.data.course.CourseMembership.Role.TEACHING_ASSISTANT
+                        && cmUser.getRole() != blackboard.data.course.CourseMembership.Role.GRADER )) {
+                return mapping.findForward("noAccess_jsp");
+            }
+
+            String[] gcItemsToDelete = gcItemForm.getGCItemsToDelete();
+            
+            if(gcItemsToDelete != null && gcItemsToDelete.length > 0) {
+                int total_successful_deletes =  bbService.deleteGradebookLineItems(gcItemsToDelete);
+                gcItemForm.reset(mapping, request);
+                statusMessage = total_successful_deletes + " columns successfully deleted.";
+                setRequestObj(request, "statusMessage", statusMessage);
+                itemList = bbService.getDeletableLineItemList(crsId);
+                setRequestObj(request, "theItemList", itemList);
+                return mapping.findForward("deleteGCItems_jsp");
+            }else {
+                    statusMessage = "Select columns to delete.";
+                    setRequestObj(request, "statusMessage", statusMessage);
+            }
+
+        } catch (Exception ex) {
+            // TODO: handle exception
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        }
+       
+        return mapping.findForward("deleteGCItems_jsp");
+    }
+    
+}

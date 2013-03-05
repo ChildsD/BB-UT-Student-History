@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowViewLayout Version="1.2">
+  <StrutsActivity path="/tool/selectGradebookItem.do" location="-30,330" dimension="181,91" />
+  <StrutsActivity path="/tool/importToGradebook.do" location="555,645" dimension="151,76" />
+  <StrutsActivity path="/tool/confirmImportAttempt.do" location="300,330" dimension="181,91" />
+  <StrutsActivity path="error_jsp;6" location="315,45" dimension="91,76" />
+  <StrutsActivity path="message_jsp;6" location="90,45" dimension="125,75" />
+  <StrutsActivity path="/tool/uploadScantronFile.jsp" location="135,630" dimension="181,46" />
+  <StrutsActivity path="/tool/selectGradebookItem.jsp" location="-135,540" dimension="181,46" />
+  <StrutsActivity path="/tool/displayReport.jsp" location="570,795" dimension="139,49" />
+  <StrutsActivity path="/tool/confirmImportAttempt.jsp" location="360,525" dimension="179,49" />
+  <StrutsActivity path="/tool/error.jsp" location="315,195" dimension="97,49" />
+  <StrutsActivity path="/tool/message.jsp" location="90,195" dimension="115,49" />
+  <StrutsActivity path="/tool/chooseUserScoresToImport.jsp" location="-135,120" dimension="205,49" />
+  <StrutsTransition id="/tool/importToGradebook.do,displayReport_jsp,/tool/displayReport.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="630,721" />
+      <AbsolutePoint location="630,795" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/tool/selectGradebookItem.do,selectGradebookItem_jsp,/tool/selectGradebookItem.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="31,421" />
+      <AbsolutePoint location="31,540" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="error_jsp;6,null,/tool/error.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="360,121" />
+      <AbsolutePoint location="360,195" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/tool/confirmImportAttempt.do,uploadScantronFile_jsp,/tool/uploadScantronFile.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="301,421" />
+      <AbsolutePoint location="301,630" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/tool/selectGradebookItem.do,uploadScantronFile_jsp,/tool/uploadScantronFile.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="150,421" />
+      <AbsolutePoint location="150,630" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="message_jsp;6,null,/tool/message.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="152,120" />
+      <AbsolutePoint location="152,195" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/tool/confirmImportAttempt.do,confirmImportAttempt_jsp,/tool/confirmImportAttempt.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="390,421" />
+      <AbsolutePoint location="390,525" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/tool/confirmImportAttempt.do,importToGradebook_action,/tool/importToGradebook.do,1" routingType="1">
+    <Bendpoints>
+      <Point rDim1="180,45" rDim2="-60,-262" />
+      <Point rDim1="180,135" rDim2="-60,-172" />
+    </Bendpoints>
+  </StrutsTransition>
+</FlowViewLayout>
+

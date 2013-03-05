@@ -1,0 +1,125 @@
+package edu.utexas.ctl.bb.gbtool.web.struts.actions;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
+
+import blackboard.data.course.Course;
+import blackboard.persist.Id;
+import blackboard.platform.BbServiceManager;
+import blackboard.platform.session.BbSession;
+import blackboard.platform.session.BbSessionManagerService;
+
+/*
+ * BaseAction class is the class that all action classes extend.
+ * Any exception thrown will be caught and logged if not caught earlier.
+ */
+public abstract class BaseAction extends Action {
+
+//    protected final static BlackboardService bbHandler = BlackboardService.getInstance();
+
+    public abstract ActionForward executeTask(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception;
+
+    public final ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        ActionForward forwardTo = null;
+        Id crsId = null;
+        
+        BbSessionManagerService sessionService = BbServiceManager.getSessionManagerService();
+        BbSession bbSession = sessionService.getSession(request);
+        String bbUserName = bbSession.getUserName();
+        
+        try {
+            String userName = bbSession.getGlobalKey("userLoggedOn");
+            /*
+             * userName is null -> User has first logged on && bbusername is not guest
+             * userName is null -> bbusername is guest ==> not logged on  
+             */
+            if (userName == null ) {
+                if(bbUserName.equalsIgnoreCase("guest")) {
+                    // not logged in as valid user
+                    removeSessionObj(request,"courseId");
+                    removeSessionObj(request,"scannedUsers");
+                    
+                    ActionMessages messages = new ActionMessages();
+                    messages.add("message", new ActionMessage("notLoggedOn.error"));
+                    saveMessages(request, messages);
+                    return mapping.findForward("message_jsp");
+                }
+                else {
+                    // new user so userName is not yet set
+                    bbSession.setGlobalKey("userLoggedOn", bbUserName);
+                    crsId = Id.generateId(Course.DATA_TYPE, request.getParameter("course_id"));
+                    setSessionObj(request, "courseId", crsId);
+                }
+            }
+            else {
+                crsId = Id.generateId(Course.DATA_TYPE, request.getParameter("course_id"));
+                setSessionObj(request, "courseId", crsId);
+            }
+
+            forwardTo = executeTask(mapping, form, request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+            StackTraceElement stack[] = ex.getStackTrace();
+            StringBuffer appendedStack  = new StringBuffer();
+            // pass the first 2 stack elements instead of the entire stack trace
+            // to the error parameters
+            for(int stack_cnt=0; stack_cnt<8; stack_cnt++) {
+                appendedStack.append(stack[stack_cnt]); 
+                appendedStack.append("\n");
+            }
+            ActionMessages actionErrors = new ActionMessages();
+            
+            actionErrors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("errors.general", appendedStack));
+            saveErrors(request, actionErrors);
+
+            return mapping.findForward("error_jsp");
+        }
+        return forwardTo;
+    }
+
+    protected void listSessionAttributes(HttpServletRequest request) {
+        java.util.Enumeration e = request.getSession(false).getAttributeNames();
+        String att;
+        while (e.hasMoreElements()) {
+            att = (String) e.nextElement();
+            Logger.getLogger(this.getClass()).log(Level.DEBUG, "SESSION ATTRIB: " + att + ", ");
+        }
+    }
+
+    protected void setSessionObj(HttpServletRequest request, String name, Object obj) {
+        request.getSession(false).setAttribute(name, obj);
+    }
+
+    protected Object getSessionObj(HttpServletRequest request, String name) {
+        return request.getSession(false).getAttribute(name);
+    }
+
+    protected void removeSessionObj(HttpServletRequest request, String name) {
+        request.getSession(false).removeAttribute(name);
+    }
+
+    protected void setRequestObj(HttpServletRequest request, String name, Object obj) {
+        request.setAttribute(name, obj);
+    }
+    
+    protected void printStachTrace() {
+          try {
+            StackTraceElement stack[] = new Throwable().getStackTrace();
+            Logger.getLogger(this.getClass()).log(Level.DEBUG, "Logging stack trace");
+            for (int i = 0; i < stack.length; i++) {
+                StackTraceElement element = stack[i];
+                Logger.getLogger(this.getClass()).log(Level.DEBUG, element.toString());
+            }
+        } catch (Exception e) {
+        }
+    }
+}

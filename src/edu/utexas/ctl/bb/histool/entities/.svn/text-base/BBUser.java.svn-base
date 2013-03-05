@@ -1,0 +1,79 @@
+/*
+ * Created on May 25, 2010 by sp2539
+ */
+package edu.utexas.ctl.bb.gbtool.entities;
+
+public class BBUser implements  java.io.Serializable {
+
+    private String eid;
+    private String firstName;
+    private String lastName;
+    private String score;
+    private int status;
+    private String currentScore;
+    
+    /**
+     * @return Returns the currentScore.
+     */
+    public String getCurrentScore() {
+        return currentScore;
+    }
+
+    /**
+     * @param currentScore The currentScore to set.
+     */
+    public void setCurrentScore(String currentScore) {
+        this.currentScore = currentScore;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public BBUser() {
+        score="";
+    }
+    
+    /**
+     * @param eid
+     * @param firstName
+     * @param lastName
+     */
+    public BBUser(String eid, String firstName, String lastName) {
+        super();
+        this.eid = eid;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+    public String getLastName() {
+        return lastName;
+    }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    public String getScore() {
+        return score;
+    }
+    public void setScore(String score) {
+        this.score = score;
+    }
+    
+    public String getEid() {
+        return eid;
+    }
+
+    public void setEid(String eid) {
+        this.eid = eid;
+    }
+}

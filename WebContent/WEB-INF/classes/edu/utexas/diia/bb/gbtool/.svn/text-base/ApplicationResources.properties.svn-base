@@ -1,0 +1,81 @@
+# Resources for parameter 'blackboard.utexas.diia.tool.web.struts.actions.ApplicationResources'
+# Project P/scantron-bb2
+
+# Messages  in BaseAction message.jsp
+notLoggedOn.error=Looks like you have not logged on. <br> Kindly <A HREF=http://courses.utexas.edu> Log On to Blackboard</A>
+error.fileformat=This format of the file cannot be uploaded. <br>If you think the file is correct, please contact <A HREF="mailto:blackboard@austin.utexas.edu"> Blackboard Support </A> for assistance. <br>
+fileformat.breadcrumb=File Format Error
+some.error.breadcrumb=Some Error
+
+# chooseUserScoresToImport.jsp
+choose.scores.titlebar=Choose Rows to Import
+choose.scores.breadcrumb=Choose Rows to Import
+choose.user.grades.instructions=There may be some rows/users in the scanned files that do not seem valid and hence have not been displayed. <br> You should get a report and email regarding those rows of users that failed in the scanned file. 
+
+# Exceptions error.jsp
+errors.general=Source of Error is  {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}
+error.breadcrumb=Error
+error.contact.person=Send questions or suggestions to: <A HREF="mailto:blackboard@austin.utexas.edu">Blackboard Support </A>
+
+# selectGradebookItem.jsp
+ 
+select.item.instructions=Select the Grade Center item which you want to import the scanned results to.
+select.item.titlebar=Select Grade Center Item
+select.item.label=Grade Center Item:
+select.item.breadcrumb=Select Existing Grade Center Item
+create.item.label=New Grade Center Item
+errors.listname.invalid=Selected Grade Center Item does not exist. Please click on the pull down menu to select an item. <br>
+select.column.instructions=Select the column that you would like to upload from the file you have received.
+
+
+# uploadScantronFile.jsp
+upload.file.instructions=Please select your desired .CSV file sent to you by the DIIA scanning office
+upload.file.titlebar=Select File to Import
+upload.file.label=Grade Center Item:
+upload.file.breadcrumb=Upload File
+
+#displayReport.jsp
+displayreport.breadcrumb=Upload Report
+
+# confirmImportAttempt.jsp
+confirm.import.titlebar=Submit to Continue Importing the Results
+confirm.import.attempt=Confirm Import Attempt
+confirm.import.instructions=Some grades already exist for this Grade Center Item. <br> Existing grades will be overwritten. <br> Submit to Continue.  
+
+#error messages
+missing.userinfo=There is no user information available on this record/score
+missing.username=There is a missing EID.
+missing.score=This user is missing a score value.
+multiple.answers=This user has questionable mark(s) on the answer sheet that you should examine.
+unknown.username=This user has an unknown EID.
+invalid.course.enrollment=This user doesn't seem to be enrolled in this course.
+invalid.score.value=This user has an invalid grade entry.
+some.error=There has been some error.
+
+# email
+email.format=text/plain
+administrator.name=Sejal 
+email.from.address=blackboard@austin.utexas.edu
+
+# separate email addresses by commas
+email.to.also.address=building.block@austin.utexas.edu
+email.report.subject=Blackboard Scanned Results Upload Report
+email.report.body.header.line1=This is the message that instructors receive upon completion of the file upload: 
+email.report.body.header.line2=ALERT: Please check your grades in the Grade Center. If the upload is not correct, email us at <A HREF="mailto:blackboard@austin.utexas.edu"> Blackboard Support </A> immediately.
+email.report.body.header.line3=Also, an email will be sent to you with the following details, please forward this message to any TAs/Instrutors who need it since we can only send one email.
+email.report.body.header.line4=Total records read from the file=
+email.report.body.error.1=Errors we found in the Scanned File:
+email.report.body.error.2=--------------------------------------------
+email.report.body.footer=Send questions or suggestions to: blackboard@austin.utexas.edu
+email.report.body.html.footer=Send questions or suggestions to: <A HREF="mailto:blackboard@austin.utexas.edu"> Blackboard Support </A>
+email.report.body.success=Upload was successful.
+javax.email.debug=true
+
+# upload report page
+displayreport.table.column.1=#
+displayreport.table.column.2=Name
+displayreport.table.column.3=EID
+displayreport.table.column.4=Error Message
+displayreport.table.column.5=Row # in scanned file
+
+

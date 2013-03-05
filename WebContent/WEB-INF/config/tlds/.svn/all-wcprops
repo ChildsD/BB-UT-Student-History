@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/repos/bb_development/!svn/ver/530/BB-UT-Gradebook-Service/WebContent/WEB-INF/config/tlds
+END
+struts-logic.tld
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/repos/bb_development/!svn/ver/530/BB-UT-Gradebook-Service/WebContent/WEB-INF/config/tlds/struts-logic.tld
+END
+struts-tiles.tld
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/repos/bb_development/!svn/ver/530/BB-UT-Gradebook-Service/WebContent/WEB-INF/config/tlds/struts-tiles.tld
+END
+RowTag.tld
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/repos/bb_development/!svn/ver/530/BB-UT-Gradebook-Service/WebContent/WEB-INF/config/tlds/RowTag.tld
+END
+struts-nested.tld
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/repos/bb_development/!svn/ver/530/BB-UT-Gradebook-Service/WebContent/WEB-INF/config/tlds/struts-nested.tld
+END
+struts-html.tld
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/repos/bb_development/!svn/ver/530/BB-UT-Gradebook-Service/WebContent/WEB-INF/config/tlds/struts-html.tld
+END
+struts-bean.tld
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/repos/bb_development/!svn/ver/530/BB-UT-Gradebook-Service/WebContent/WEB-INF/config/tlds/struts-bean.tld
+END

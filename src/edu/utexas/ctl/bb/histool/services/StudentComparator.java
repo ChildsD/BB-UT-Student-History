@@ -1,0 +1,14 @@
+/*
+ * Created on Jan 25, 2006
+ */
+package edu.utexas.ctl.bb.histool.services;
+
+import edu.utexas.ctl.bb.histool.entities.BBUser;
+
+public class StudentComparator implements java.util.Comparator {
+    public int compare(Object o1, Object o2) {
+        String s1 = ((BBUser)o1).getLastName();
+        String s2 = ((BBUser)o2).getLastName();
+        return s1.compareTo(s2);
+    }
+}

@@ -1,0 +1,53 @@
+
+package edu.utexas.ctl.bb.gbtool.web.struts.forms;
+
+import java.util.List;
+
+import org.apache.struts.action.ActionForm;
+
+import edu.utexas.ctl.bb.gbtool.entities.BBUser;
+
+public class GradebookForm extends ActionForm {
+
+    private String lineItemName;
+    private String columnToUpload;
+    private List<BBUser> userInfo;
+    private String pointsPossible;
+    
+    /**
+     * @return Returns the pointsPossible.
+     */
+    public String getPointsPossible() {
+        return pointsPossible;
+    }
+    /**
+     * @param pointsPossible The pointsPossible to set.
+     */
+    public void setPointsPossible(String pointsPossible) {
+        this.pointsPossible = pointsPossible;
+    }
+    public List<BBUser> getUserInfo() {
+        return userInfo;
+    }
+    public void setUserInfo(List<BBUser> userInfo) {
+        this.userInfo = userInfo;
+    }
+    public GradebookForm() {
+        lineItemName=new String("-1");
+        pointsPossible = "";
+    }
+    public final String getLineItemName() {
+        return lineItemName;
+    }
+
+    public final void setLineItemName(String theId) {
+        this.lineItemName = theId;
+    }
+    public final String getColumnToUpload() {
+        return columnToUpload;
+    }
+    public final void setColumnToUpload(String columnToUpload) {
+        this.columnToUpload = columnToUpload;
+    }
+    
+}

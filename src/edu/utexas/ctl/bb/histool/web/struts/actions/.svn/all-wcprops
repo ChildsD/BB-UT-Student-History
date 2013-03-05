@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/repos/bb_development/!svn/ver/530/BB-UT-Gradebook-Service/src/edu/utexas/ctl/bb/gbtool/web/struts/actions
+END
+EditScoreForGCItemAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/repos/bb_development/!svn/ver/631/BB-UT-Gradebook-Service/src/edu/utexas/ctl/bb/gbtool/web/struts/actions/EditScoreForGCItemAction.java
+END
+BaseAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/repos/bb_development/!svn/ver/530/BB-UT-Gradebook-Service/src/edu/utexas/ctl/bb/gbtool/web/struts/actions/BaseAction.java
+END
+DeleteGCItemsAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/repos/bb_development/!svn/ver/631/BB-UT-Gradebook-Service/src/edu/utexas/ctl/bb/gbtool/web/struts/actions/DeleteGCItemsAction.java
+END

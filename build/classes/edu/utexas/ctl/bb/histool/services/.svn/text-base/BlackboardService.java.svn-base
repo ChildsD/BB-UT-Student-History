@@ -1,0 +1,523 @@
+/*
+ * Created on Nov 30, 2005
+ */
+package edu.utexas.ctl.bb.gbtool.services;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import edu.utexas.ctl.bb.gbtool.entities.BBUser;
+import edu.utexas.diia.bb.gbtool.services.ListItemComparator;
+
+import blackboard.data.ValidationException;
+import blackboard.data.course.Course;
+import blackboard.data.course.CourseMembership;
+import blackboard.data.course.CourseMembership.Role;
+import blackboard.data.gradebook.Lineitem;
+import blackboard.data.gradebook.Score;
+import blackboard.data.user.User;
+import blackboard.persist.BbPersistenceManager;
+import blackboard.persist.Id;
+import blackboard.persist.KeyNotFoundException;  
+import blackboard.persist.PersistenceException;
+import blackboard.persist.course.CourseDbLoader;
+import blackboard.persist.course.CourseMembershipDbLoader;
+import blackboard.persist.gradebook.LineitemDbLoader;
+import blackboard.persist.gradebook.LineitemDbPersister;
+import blackboard.persist.gradebook.ScoreDbLoader;
+import blackboard.persist.gradebook.ScoreDbPersister;
+import blackboard.persist.user.UserDbLoader;
+import blackboard.platform.BbServiceManager;
+
+/**
+ * @author Sejal Patel
+ */
+/**
+ * BlackboardService class is a singleton class that provides the methods for
+ * various gradebook, course, user services of blackboard like Getting a list of
+ * LineItems Getting a single Line Item Getting the Instructor of a course
+ * Getting User information
+ */
+public class BlackboardService  {
+
+//    private static final BlackboardService instance = new BlackboardService();
+
+//    /**
+//     * 
+//     * @return Instance of the BlackboardService class
+//     */
+//    public static BlackboardService getInstance() {
+//        return instance;
+//    }
+
+    /**
+     * Initializes the Blackboard dadtabase persistence Manager class
+     * 
+     */
+    public BlackboardService() {
+    }
+
+    
+    public int deleteGradebookLineItems(String[] lineItemIds) {
+        
+        Id liItemId = null;
+        int totalDeleted = 0;
+        
+        try {            
+            LineitemDbPersister liItemPersister = (LineitemDbPersister)getBbPm().getPersister(LineitemDbPersister.TYPE);
+              
+            for (int i = 0; i < lineItemIds.length; i++) {
+                String liIdString = lineItemIds[i];
+                liItemId = Id.generateId(Lineitem.LINEITEM_DATA_TYPE, liIdString);
+                liItemPersister.deleteById(liItemId);
+                totalDeleted++;
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        }
+        
+        return totalDeleted;
+    }
+    
+    
+    public void  setCurrentScores(List studentList, Id courseId, String theLineItemName) {
+        BBUser aStudent;
+        User theUser;
+        CourseMembership cmUser;
+        Score currentScore=null;
+        String scoreInGB="-";
+      
+        Lineitem theLineItem = getLineItem(courseId, theLineItemName);
+
+        try {
+            ScoreDbLoader scoreLoader = (ScoreDbLoader)getBbPm().getLoader(ScoreDbLoader.TYPE);
+            
+            for (int cnt = 0; cnt < studentList.size(); cnt++) {
+                aStudent = (BBUser) studentList.get(cnt);
+
+                theUser = getUser(aStudent.getEid());
+
+                if (theUser == null) {
+//                    /*
+//                     * theUser is null if the username/eid doesn't exist in the system or
+//                     * if the User is missing a username i.e. its blank
+//                     */
+                    continue;
+                }
+
+                cmUser = getCourseMembershipForUser(courseId, theUser.getId());
+                if (cmUser == null) {
+//                    /*
+//                     * cmUser is null if the student with this username is not
+//                     * enrolled in this course
+//                     */
+                    continue;
+                }
+
+                try {
+                    currentScore = scoreLoader.loadByCourseMembershipIdAndLineitemId(cmUser.getId(), theLineItem.getId());
+                    scoreInGB = currentScore.getGrade();
+                } catch (KeyNotFoundException ex) {
+                    /*
+                     * loadByCourseMembershipIdAndLineitemId throws
+                     * KeyNotFoundException if there is no record of the student
+                     * and that lineitem at all i.e. if the score has never been
+                     * initialized for this lineitem and student
+                     */
+                    scoreInGB="-";
+                }
+                
+                aStudent.setCurrentScore(scoreInGB);
+//                Logger.getLogger(this.getClass()).log(Level.ERROR, aStudent.getEid() + "=" + scoreInGB);
+            }
+        } catch(Exception ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        }
+
+    }
+    
+    public int updateGradebookScores(List studentList, Id courseId, String theLineItemName) {
+        BBUser aStudent;
+        User theUser;
+        CourseMembership cmUser;
+        Score currentScore;
+//        String decimalPattern = "(\\d*)?(.)?(\\d)?";
+        String decimalPattern = "^\\d*\\.?\\d*$";
+        
+        Lineitem theLineItem = getLineItem(courseId, theLineItemName);
+        int invalid_entry_cnt = 0;
+
+        try {
+            ScoreDbLoader scoreLoader = (ScoreDbLoader)getBbPm().getLoader(ScoreDbLoader.TYPE);
+            ScoreDbPersister scorePersister = (ScoreDbPersister)getBbPm().getPersister(ScoreDbPersister.TYPE);
+            
+            for (int cnt = 0; cnt < studentList.size(); cnt++) {
+                aStudent = (BBUser) studentList.get(cnt);
+                
+                String theScore = aStudent.getScore();
+//                Logger.getLogger(this.getClass()).log(Level.ERROR, aStudent.getEid() + "=" + theScore);
+                if(theScore==null || (theScore!= null &&  theScore.equals("")) || (theScore!= null && theScore.equals(" ")) ) {
+                    continue;
+                }
+                
+                if(theScore.matches(decimalPattern) == false){
+                    // has a letter somewhere maybe
+                    continue;
+                }
+                
+                theUser = getUser(aStudent.getEid());
+
+                if (theUser == null) {
+//                    /*
+//                     * theUser is null if the username/eid doesn't exist in the system or
+//                     * if the User is missing a username i.e. its blank
+//                     */
+                    continue;
+                }
+
+                cmUser = getCourseMembershipForUser(courseId, theUser.getId());
+                if (cmUser == null) {
+//                    /*
+//                     * cmUser is null if the student with this username is not
+//                     * enrolled in this course
+//                     */
+                    continue;
+                }
+
+                try {
+                    currentScore = scoreLoader.loadByCourseMembershipIdAndLineitemId(cmUser.getId(), theLineItem.getId());
+                } catch (KeyNotFoundException ex) {
+                    /*
+                     * loadByCourseMembershipIdAndLineitemId throws
+                     * KeyNotFoundException if there is no record of the student
+                     * and that lineitem at all i.e. if the score has never been
+                     * initialized for this lineitem and student
+                     */
+                    currentScore = new Score();
+                    currentScore.setCourseMembershipId(cmUser.getId());
+                    currentScore.setLineitemId(theLineItem.getId());
+                    currentScore.setDateAdded();
+                }
+
+                /*
+                 * You have gotten this far! Might as well set the grade
+                 */
+                currentScore.setDateChanged();
+                currentScore.setGrade(aStudent.getScore());
+                scorePersister.persist(currentScore);
+            }
+        } catch (PersistenceException ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        } catch (ValidationException ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        }
+        
+        return invalid_entry_cnt;
+    }
+    
+    public List getAllNonInstrsEnrolledInCrs(Id courseId) {
+        List userList = new ArrayList();
+        
+        try {
+            UserDbLoader usrLoader = UserDbLoader.Default.getInstance();
+            List crsList = usrLoader.loadByCourseId(courseId);
+            CourseMembershipDbLoader cmLoader  = CourseMembershipDbLoader.Default.getInstance();
+                       
+            for (Iterator iter = crsList.iterator(); iter.hasNext();) {
+                User aUser = (User) iter.next();
+                CourseMembership cm = cmLoader.loadByCourseAndUserId(courseId, aUser.getId());
+                
+                if(cm.getRole() != Role.INSTRUCTOR ) {
+                    userList.add( new BBUser(aUser.getUserName().toUpperCase(), aUser.getGivenName(), aUser.getFamilyName()));
+                }
+            }
+            
+            if(userList.size()>0) {
+                Collections.sort(userList, new StudentComparator());
+            }
+            
+        } catch (Exception ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        }
+        return (userList.size() > 0 ) ? userList: null;
+    }
+    
+    
+    public List getAllEnrolledInCourse(Id courseId) {
+        List studentList = new ArrayList();
+        
+        try {
+            UserDbLoader usrLoader = UserDbLoader.Default.getInstance();
+            
+            List userList = usrLoader.loadByCourseId(courseId);
+
+            for (Iterator iter = userList.iterator(); iter.hasNext();) {
+                User aUser = (User) iter.next();
+                studentList.add( new BBUser(aUser.getUserName(), aUser.getGivenName(), aUser.getFamilyName()));
+            }
+            
+        } catch (Exception ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        }
+        return (studentList.size() > 0 ) ? studentList: null;
+    }
+    
+    public boolean scoresAlreadyExist(Id courseId, String theLineItemName) {
+        Lineitem theLineItem = getLineItem(courseId, theLineItemName);
+        try {
+            ScoreDbLoader scoreLoader = (ScoreDbLoader) getBbPm().getLoader(ScoreDbLoader.TYPE);
+            List listOfScores = scoreLoader.loadByLineitemId(theLineItem.getId());
+
+            if (listOfScores == null) {
+                Logger.getLogger(this.getClass()).log(Level.ERROR, "Should not have reached here");
+            } else {
+                return (listOfScores.size() > 0) ? true : false;
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        }
+        
+        return false;
+    }
+
+    /**
+     * 
+     * @param courseId The Id of the CourseMembership record
+     * @return The list of LineItem objects for that course
+     */
+    public List getLineItemList(Id courseId) {
+        List lineItemList = null;
+
+        try {
+            LineitemDbLoader liLoader = (LineitemDbLoader) getBbPm().getLoader(LineitemDbLoader.TYPE);
+            lineItemList = liLoader.loadByCourseId(courseId);
+            removeUnwantedLineitems(lineItemList);
+
+            /*
+             * Create an extra lineitem as default
+             */
+            Lineitem defaultLineitem = new Lineitem();
+            defaultLineitem.setName("Click Pull Down Menu");
+            Collections.sort(lineItemList, new ListItemComparator());
+            lineItemList.add(0, defaultLineitem);
+
+            
+        } catch (KeyNotFoundException ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        } catch (PersistenceException ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        }
+
+        return (lineItemList.size() > 0) ? lineItemList : null;
+    }
+
+    public List getDeletableLineItemList(Id courseId) {
+        List lineItemList = null;
+
+        try {
+            LineitemDbLoader liLoader = (LineitemDbLoader) getBbPm().getLoader(LineitemDbLoader.TYPE);
+            lineItemList = liLoader.loadByCourseId(courseId);
+            removeNonDeletableLineitems(lineItemList);
+            
+        } catch (KeyNotFoundException ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        } catch (PersistenceException ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        }
+
+        return (lineItemList.size() > 0) ? lineItemList : null;
+    }
+
+    private void removeNonDeletableLineitems(List lineItemList) {
+        String lineitem_name=null;
+        Lineitem aLineItem = null;
+        
+        for (int cnt = 0; cnt < lineItemList.size(); cnt++) {
+            aLineItem = (Lineitem) lineItemList.get(cnt);
+            lineitem_name = aLineItem.getName();
+            
+            // skip those line items that have an assessmentId since it is probably created by some content item
+            // like an assingment, survey or test
+            if(aLineItem.getAssessmentId()!=null) {
+                lineItemList.remove(cnt);
+                cnt=-1;
+            }
+            else if (lineitem_name.equals("Running Total")) {
+                lineItemList.remove(cnt);
+                cnt=-1;
+            }
+            else if (lineitem_name.equals("Running Weighted Total")) {
+                lineItemList.remove(cnt);
+                cnt=-1;
+            }
+            else if (lineitem_name.equals("Weighted Total")) {
+                lineItemList.remove(cnt);
+                cnt=-1;
+            }
+            else if (lineitem_name.equals("Total")) {
+                lineItemList.remove(cnt);
+                cnt=-1;
+            }
+        }
+    }
+    
+    private void logAllLineItems(List lineItemList) {
+        for (int cnt = 0; cnt < lineItemList.size(); cnt++) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, "SEJAL: lineitem " + ((Lineitem) lineItemList.get(cnt)).getName() + " length=" + ((Lineitem) lineItemList.get(cnt)).getName().length());
+        }
+    }
+    
+    /**
+     * Removes Item Lists with name Total and Weighted Total since they are not
+     * actual Gradebook Items
+     * 
+     * @param lineItemList List of gradebook Items
+     */
+    private void removeUnwantedLineitems(List lineItemList) {
+        String lineitem_name=null;
+       
+        for (int cnt = 0; cnt < lineItemList.size(); cnt++) {
+            lineitem_name = ((Lineitem) lineItemList.get(cnt)).getName();
+           
+            if (lineitem_name.equals("Running Total")) {
+                lineItemList.remove(cnt);
+                cnt=-1;
+            }
+            if (lineitem_name.equals("Running Weighted Total")) {
+                lineItemList.remove(cnt);
+                cnt=-1;
+            }
+            if (lineitem_name.equals("Weighted Total")) {
+                lineItemList.remove(cnt);
+                cnt=-1;
+            }
+            if (lineitem_name.equals("Total")) {
+                lineItemList.remove(cnt);
+                cnt=-1;
+            }
+        }
+    }
+
+    /**
+     * 
+     * @param courseId The Id of the CourseMembership record
+     * @param lineItemName Name of the gradebook item you would like
+     * @return LineItem object for the given course and lineitem name
+     */
+    public Lineitem getLineItem(Id courseId, String lineItemName) {
+        Lineitem theLineItem = null;
+
+        try {
+            LineitemDbLoader liLoader = (LineitemDbLoader) getBbPm().getLoader(LineitemDbLoader.TYPE);
+            List lineItemList = liLoader.loadByCourseIdAndLineitemName(courseId, lineItemName);
+
+            if (lineItemList.size() == 0)
+                return null;
+
+            theLineItem = (Lineitem) lineItemList.get(0);
+        } catch (KeyNotFoundException ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        } catch (PersistenceException ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        }
+
+        return theLineItem;
+    }
+
+    public CourseMembership getCourseMembershipForUser(Id courseId, Id userId)
+            throws KeyNotFoundException, PersistenceException {
+
+        CourseMembership cm = null;
+
+        try {
+            CourseMembershipDbLoader cmLoader = CourseMembershipDbLoader.Default.getInstance();
+            cm = cmLoader.loadByCourseAndUserId(courseId, userId);
+        } catch (Exception ex) {
+            Logger.getLogger(this.getClass()).log(Level.DEBUG, "This student is not in this course");
+        }
+
+        return cm;
+    }
+
+    public User getUser(String userName) {
+        User theUser = null;
+
+        try {
+            UserDbLoader userLoader = UserDbLoader.Default.getInstance();
+            theUser = userLoader.loadByUserName(userName);
+        } catch (KeyNotFoundException ex) {
+            /*
+             * KeyNotFoundException is thrown if the user with this eid doesn't
+             * exist
+             */
+             Logger.getLogger(this.getClass()).log(Level.DEBUG, userName +  "=username doesn't exist");
+            theUser = null;
+        } catch (PersistenceException ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        }
+
+        return theUser;
+    }
+
+    public User getInstructorForCourse(Id courseId) {
+        try {
+            CourseMembershipDbLoader cmLoader = CourseMembershipDbLoader.Default.getInstance();
+            List cmList = cmLoader.loadByCourseIdAndRole(courseId, CourseMembership.Role.INSTRUCTOR);
+            UserDbLoader userLoader = UserDbLoader.Default.getInstance();
+
+            if (cmList == null || cmList.size() == 0) {
+                Logger.getLogger(this.getClass()).log(Level.ERROR, "no instructor for this course?");
+                return null;
+            }
+
+            CourseMembership instructorCrsMem = (CourseMembership) cmList.get(0);
+            User instructor = userLoader.loadById(instructorCrsMem.getUserId());
+
+            if (instructor == null) {
+                Logger.getLogger(this.getClass()).log(Level.ERROR, "no User obj for this instructor obtained from cm, userid = " + instructorCrsMem.getUserId());
+            } else
+                return instructor;
+
+        } catch (Exception ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        }
+
+        return null;
+    }
+
+    public String getCourseName(Id courseId) {
+        try {
+            CourseDbLoader crsDbLoader = CourseDbLoader.Default.getInstance();
+            Course crs = crsDbLoader.loadById(courseId);
+            return crs.getTitle();
+
+        } catch (Exception ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        }
+
+        return null;
+    }
+    
+    public String getCourseId(Id courseId) {
+        try {
+            CourseDbLoader crsDbLoader = CourseDbLoader.Default.getInstance();
+            Course crs = crsDbLoader.loadById(courseId);
+            return crs.getCourseId();
+
+        } catch (Exception ex) {
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        }
+
+        return null;
+    }
+    
+    public final BbPersistenceManager getBbPm() {
+        return  BbServiceManager.getPersistenceService().getDbPersistenceManager();
+    }
+
+}

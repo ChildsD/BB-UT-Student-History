@@ -1,0 +1,91 @@
+//Created by MyEclipse Struts
+// XSL source (default): platform:/plugin/com.genuitec.eclipse.cross.easystruts.eclipse_4.0.1/xslt/JavaClass.xsl
+
+package edu.utexas.ctl.bb.gbtool.web.struts.actions;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
+import edu.utexas.ctl.bb.gbtool.services.BlackboardService;
+import edu.utexas.ctl.bb.gbtool.web.struts.forms.GradebookForm;
+import edu.utexas.diia.bb.gbtool.web.struts.actions.BaseAction;
+
+import blackboard.data.course.CourseMembership;
+import blackboard.data.gradebook.Lineitem;
+import blackboard.persist.Id;
+import blackboard.platform.session.BbSession;
+import blackboard.platform.session.BbSessionManagerService;
+import blackboard.platform.session.BbSessionManagerServiceFactory;
+
+public class EditScoreForGCItemAction extends BaseAction {
+
+    public ActionForward executeTask(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+
+        GradebookForm gbForm = (GradebookForm) form;
+        Lineitem liItem = null;
+        
+        Id crsId = (Id) getSessionObj(request, "courseId");
+        BlackboardService bbService = new BlackboardService();
+        List itemList = bbService.getLineItemList(crsId);
+        setRequestObj(request, "theItemList", itemList);
+        BbSessionManagerService sessionService =  BbSessionManagerServiceFactory.getInstance();
+        BbSession bbSession = sessionService.getSession(request);
+        
+        Id userId = bbSession.getUserId();
+        
+        try {
+            CourseMembership cmUser = bbService.getCourseMembershipForUser(crsId, userId);
+            if(cmUser==null || (cmUser.getRole() != blackboard.data.course.CourseMembership.Role.INSTRUCTOR  
+                        && cmUser.getRole() != blackboard.data.course.CourseMembership.Role.TEACHING_ASSISTANT
+                        && cmUser.getRole() != blackboard.data.course.CourseMembership.Role.GRADER )) {
+                return mapping.findForward("noAccess_jsp");
+            }
+            
+            if(request.getParameter("populate") != null) {
+                liItem = bbService.getLineItem(crsId, gbForm.getLineItemName());
+                gbForm.setUserInfo(bbService.getAllNonInstrsEnrolledInCrs(crsId));
+                bbService.setCurrentScores(gbForm.getUserInfo(), crsId, gbForm.getLineItemName());
+                gbForm.setLineItemName(gbForm.getLineItemName());
+                gbForm.setPointsPossible(Float.toString(liItem.getPointsPossible()));
+                return mapping.findForward("editScoresForGCItem_jsp");
+            }
+            
+            if (!gbForm.getLineItemName().equals("-1") && (request.getParameter("bottom_Submit") != null || request.getParameter("top_Submit") != null )) {
+                liItem = bbService.getLineItem(crsId, gbForm.getLineItemName());
+
+                if (liItem != null) {
+                    int import_errors = bbService.updateGradebookScores(gbForm.getUserInfo(), crsId, gbForm.getLineItemName());
+                    gbForm.setLineItemName("-1");
+                    gbForm.reset(mapping, request);
+                    return mapping.findForward("displayReport_jsp");
+                } 
+//                    else {
+//                    ActionMessages messages = new ActionMessages();
+//                    messages.add("listname.error", new ActionMessage("errors.listname.invalid"));
+//                    saveMessages(request, messages);
+//                }
+            } // liitem==-1
+
+        } catch (Exception ex) {
+            // TODO: handle exception
+            Logger.getLogger(this.getClass()).log(Level.ERROR, null, ex);
+        }
+
+        gbForm.setLineItemName("-1");
+        gbForm.reset(mapping, request);
+        
+        setRequestObj(request, "theItemList", itemList);
+        gbForm.setUserInfo(null);
+        
+        return mapping.findForward("editScoresForGCItem_jsp");
+    }
+    
+}

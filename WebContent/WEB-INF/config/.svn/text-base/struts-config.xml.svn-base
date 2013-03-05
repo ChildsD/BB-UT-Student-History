@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+
+
+<struts-config>
+	<data-sources />
+	<form-beans>
+		<form-bean name="GradebookForm" type="edu.utexas.ctl.bb.gbtool.web.struts.forms.GradebookForm"  />
+		<form-bean name="GCItemForm" type="edu.utexas.ctl.bb.gbtool.web.struts.forms.GCItemForm"  />
+	</form-beans>
+
+	<global-exceptions>
+		<exception key="errors.general" type="java.lang.Exception" path="/tool/error.jsp"></exception>
+	</global-exceptions>
+
+	<global-forwards>
+		<forward name="error_jsp" path="/tool/error.jsp"></forward>
+		<forward name="message_jsp" path="/tool/message.jsp"></forward>
+		<forward name="noAccess_jsp" path="/tool/noAccess.jsp" />
+	</global-forwards>
+
+	<action-mappings>
+		<action path="/tool/selectGradeCenterTask"  forward="/tool/selectGradeCenterTask.jsp"/>
+				
+		<action attribute="GradebookForm" name="GradebookForm" path="/tool/editScoresForGCItem" scope="session" type="edu.utexas.ctl.bb.gbtool.web.struts.actions.EditScoreForGCItemAction" validate="false">
+			<forward name="editScoresForGCItem_jsp" path="/tool/editScoresForGCItem.jsp" />
+			<forward name="displayReport_jsp" path="/tool/displayReport.jsp" />
+		</action>
+ 
+ 		<action attribute="GCItemForm" name="GCItemForm" path="/tool/deleteGCItems" scope="request" type="edu.utexas.ctl.bb.gbtool.web.struts.actions.DeleteGCItemsAction" validate="false">
+			<forward name="deleteGCItems_jsp" path="/tool/deleteGCItems.jsp" />
+			<forward name="displayReport_jsp" path="/tool/displayReport.jsp" />
+			<forward name="deleteGCItems_action" path="/tool/deleteGCItems.do" />
+		</action>
+		
+	</action-mappings>
+	<message-resources parameter="edu.utexas.ctl.bb.gbtool.ApplicationResources" />
+</struts-config>

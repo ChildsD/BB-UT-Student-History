@@ -1,0 +1,29 @@
+
+package edu.utexas.ctl.bb.gbtool.web.struts.forms;
+
+import java.util.List;
+
+import org.apache.struts.action.ActionForm;
+
+import edu.utexas.ctl.bb.gbtool.entities.BBUser;
+
+public class GCItemForm extends ActionForm {
+
+    private String[] GCItemsToDelete;
+
+    /**
+     * @return Returns the gCItemsToDelete.
+     */
+    public String[] getGCItemsToDelete() {
+        return GCItemsToDelete;
+    }
+    /**
+     * @param gCItemsToDelete The gCItemsToDelete to set.
+     */
+    public void setGCItemsToDelete(String[] gCItemsToDelete) {
+        GCItemsToDelete = gCItemsToDelete;
+    }
+    
+    
+   
+}

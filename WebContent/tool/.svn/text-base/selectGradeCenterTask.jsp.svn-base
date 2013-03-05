@@ -1,0 +1,41 @@
+<%@ page language="java" pageEncoding="UTF-8"%>
+
+<%@ taglib uri="/bbNG" prefix="bbNG"%>
+
+<bbNG:learningSystemPage  ctxId="ctx">
+
+		<bbNG:cssFile  href="../css/ut_buildingblock.css"/>
+
+		<bbNG:jsBlock >
+			<Script Language="JavaScript" type="text/javascript">
+				function loadAddGB() {
+					var load = window.open('<%="/webapps/portal/frameset.jsp?tab_tab_group_id=_3_1&url=/webapps/gradebook/do/instructor/addModifyItemDefinition?course_id=" + request.getParameter("course_id") %>','','scrollbars=yes,menubar=no,height=600,width=800,resizable=yes,toolbar=no,location=no,status=no');
+				}
+			</Script>
+		</bbNG:jsBlock >
+
+
+		<bbNG:breadcrumbBar environment="ctrl_panel">
+			<bbNG:breadcrumb>	Grade Center Tasks</bbNG:breadcrumb>
+		</bbNG:breadcrumbBar>
+		
+		<bbNG:pageHeader>
+				<bbNG:pageTitleBar> Select a Grade Center task</bbNG:pageTitleBar>
+		</bbNG:pageHeader>
+		<br>
+		
+		<bbNG:button label="Create a Grade Center column"  url="javascript:loadAddGB()"  /><br><br>
+		<p class="indent"> Allows to create a column in the Grade Center </p>
+		<br><br><br>
+		
+		<bbNG:button label="Delete multiple Grade Center columns	" url='<%="/webapps/UTXA-edit_gb_tool-bb_bb60/tool/deleteGCItems.do?course_id=" + request.getParameter("course_id")%>' />  <br><br>
+		<p class="indent"> Allows to select multiple grade center items to delete.</p>
+		
+		<br><br><br>
+		
+		<bbNG:button label="Edit/Enter Grades	" url='<%="/webapps/UTXA-edit_gb_tool-bb_bb60/tool/editScoresForGCItem.do?course_id=" + request.getParameter("course_id")%>' />  <br><br>
+		<p class="indent"> Allows to select a Grade Center item and enter scores.</p>
+		
+		<%@ include file="commonHidden.jsp"%>
+
+</bbNG:learningSystemPage>
